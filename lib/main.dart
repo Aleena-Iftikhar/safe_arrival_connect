@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'contacts.dart';
+import 'destinationSetup.dart';
 import 'homeScreen.dart';
 
 void main() {
@@ -12,6 +14,14 @@ class SafeArriveApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/home':     (context) => HomeScreen(),
+        '/setup':    (context) => SetupJourneyPage(),
+        '/contacts': (context) => ContactsPage(),
+        // '/history':  (context) => HistoryPage(),
+        // '/settings': (context) => SettingsPage(),
+      },
+
       title: 'SafeArrive',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

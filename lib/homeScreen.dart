@@ -1,8 +1,5 @@
-
-// HOME SCREEN
-
-
 import 'package:flutter/material.dart';
+import 'commonWidget/bottomNavigationBar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,14 +11,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final List<_NavItem> _navItems = const [
-    _NavItem(icon: Icons.home_rounded, label: 'Home'),
-    _NavItem(icon: Icons.location_on_outlined, label: 'Setup'),
-    _NavItem(icon: Icons.people_outline_rounded, label: 'Contacts'),
-    _NavItem(icon: Icons.access_time_outlined, label: 'History'),
-    _NavItem(icon: Icons.settings_outlined, label: 'Settings'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Header Card (blue gradient) ──
               _HeaderCard(),
               const SizedBox(height: 16),
-
-              // ── Info Cards ──
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -56,18 +42,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-
-              // ── Recent Journeys ──
               _RecentJourneysSection(),
               const SizedBox(height: 16),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: _BottomNav(
-        items: _navItems,
+
+      // BOTTOM BAR
+      bottomNavigationBar: BottomNav(
         selectedIndex: _selectedIndex,
-        onTap: (i) => setState(() => _selectedIndex = i),
+        onTap: (index) {
+          setState(() => _selectedIndex = index);
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/home');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/setup');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/contacts');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/history');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/settings');
+              break;
+          }
+        },
       ),
     );
   }
@@ -96,49 +100,35 @@ class _HeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // App name row
           Row(
             children: [
               Container(
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.25),
+                  color: Colors.white24,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
-                  Icons.shield_outlined,
-                  color: Colors.white,
-                  size: 24,
-                ),
+                child: const Icon(Icons.shield_outlined,
+                    color: Colors.white, size: 26),
               ),
               const SizedBox(width: 12),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'SafeArrive',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                  Text(
-                    'Arrive Safe. Stay Connected.',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
-                    ),
-                  ),
+                  Text('SafeArrive',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.3)),
+                  Text('Arrive Safe. Stay Connected.',
+                      style: TextStyle(color: Colors.white, fontSize: 18)),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 24),
-
-          // Start Journey button
           Container(
             width: double.infinity,
             height: 52,
@@ -157,16 +147,13 @@ class _HeaderCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.play_arrow_rounded,
-                    color: Color(0xFF5B6FD4), size: 22),
+                    color: Color(0xFF5B6FD4), size: 24),
                 SizedBox(width: 8),
-                Text(
-                  'Start Journey',
-                  style: TextStyle(
-                    color: Color(0xFF5B6FD4),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text('Start Journey',
+                    style: TextStyle(
+                        color: Color(0xFF5B6FD4),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600)),
               ],
             ),
           ),
@@ -201,18 +188,14 @@ class _InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
+          color: Colors.white, borderRadius: BorderRadius.circular(16)),
       child: Row(
         children: [
           Container(
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
+                color: iconBgColor, borderRadius: BorderRadius.circular(12)),
             child: Icon(icon, color: iconColor, size: 22),
           ),
           const SizedBox(width: 14),
@@ -223,19 +206,19 @@ class _InfoCard extends StatelessWidget {
                 Text(label,
                     style: const TextStyle(
                         color: Color(0xFF9BA3B4),
-                        fontSize: 11,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.8)),
                 const SizedBox(height: 2),
                 Text(title,
                     style: const TextStyle(
                         color: Color(0xFF1A1D2E),
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
                 Text(subtitle,
                     style: const TextStyle(
-                        color: Color(0xFF9BA3B4), fontSize: 13)),
+                        color: Color(0xFF9BA3B4), fontSize: 16)),
               ],
             ),
           ),
@@ -261,18 +244,15 @@ class _RecipientsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
+          color: Colors.white, borderRadius: BorderRadius.circular(16)),
       child: Row(
         children: [
           Container(
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFFE6F9F0),
-              borderRadius: BorderRadius.circular(12),
-            ),
+                color: const Color(0xFFE6F9F0),
+                borderRadius: BorderRadius.circular(12)),
             child: const Icon(Icons.people_outline_rounded,
                 color: Color(0xFF3DB87A), size: 22),
           ),
@@ -284,7 +264,7 @@ class _RecipientsCard extends StatelessWidget {
                 const Text('RECIPIENTS',
                     style: TextStyle(
                         color: Color(0xFF9BA3B4),
-                        fontSize: 11,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.8)),
                 const SizedBox(height: 2),
@@ -295,7 +275,7 @@ class _RecipientsCard extends StatelessWidget {
                         text: 'Mom, Dad ',
                         style: TextStyle(
                             color: Color(0xFF1A1D2E),
-                            fontSize: 15,
+                            fontSize: 18,
                             fontWeight: FontWeight.w600),
                       ),
                       TextSpan(
@@ -348,13 +328,11 @@ class _ContactBadge extends StatelessWidget {
         border: Border.all(color: contact.color.withOpacity(0.3), width: 1),
       ),
       alignment: Alignment.center,
-      child: Text(
-        contact.initial,
-        style: TextStyle(
-            color: contact.color,
-            fontSize: 12,
-            fontWeight: FontWeight.w700),
-      ),
+      child: Text(contact.initial,
+          style: TextStyle(
+              color: contact.color,
+              fontSize: 16,
+              fontWeight: FontWeight.w700)),
     );
   }
 }
@@ -368,9 +346,7 @@ class _ArrivalMessageCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
+          color: Colors.white, borderRadius: BorderRadius.circular(16)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -378,9 +354,8 @@ class _ArrivalMessageCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFFE8EEFF),
-              borderRadius: BorderRadius.circular(12),
-            ),
+                color: const Color(0xFFE8EEFF),
+                borderRadius: BorderRadius.circular(12)),
             child: const Icon(Icons.chat_bubble_outline_rounded,
                 color: Color(0xFF5B6FD4), size: 22),
           ),
@@ -392,23 +367,20 @@ class _ArrivalMessageCard extends StatelessWidget {
                 const Text('ARRIVAL MESSAGE',
                     style: TextStyle(
                         color: Color(0xFF9BA3B4),
-                        fontSize: 11,
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.8)),
                 const SizedBox(height: 8),
                 Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF4F6FA),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                      color: const Color(0xFFF4F6FA),
+                      borderRadius: BorderRadius.circular(12)),
                   child: const Text(
                     'Hi Mom, I have safely arrived at my destination. All is well! ❤️',
                     style: TextStyle(
-                        color: Color(0xFF3A3F5C),
-                        fontSize: 14,
-                        height: 1.5),
+                        color: Color(0xFF3A3F5C), fontSize: 16, height: 1.5),
                   ),
                 ),
               ],
@@ -426,23 +398,20 @@ class _ArrivalMessageCard extends StatelessWidget {
 class _RecentJourneysSection extends StatelessWidget {
   final List<_JourneyItem> journeys = const [
     _JourneyItem(
-      destination: 'University Hostel',
-      dateTime: 'Apr 18 · 06:19 PM',
-      status: 'Sent',
-      isPending: false,
-    ),
+        destination: 'University Hostel',
+        dateTime: 'Apr 18 · 06:19 PM',
+        status: 'Sent',
+        isPending: false),
     _JourneyItem(
-      destination: 'Office, Gulberg',
-      dateTime: 'Apr 16 · 06:19 PM',
-      status: 'Sent',
-      isPending: false,
-    ),
+        destination: 'Office, Gulberg',
+        dateTime: 'Apr 16 · 06:19 PM',
+        status: 'Sent',
+        isPending: false),
     _JourneyItem(
-      destination: "Aunt's House, DHA",
-      dateTime: 'Apr 14 · 06:19 PM',
-      status: 'Pending',
-      isPending: true,
-    ),
+        destination: "Aunt's House, DHA",
+        dateTime: 'Apr 14 · 06:19 PM',
+        status: 'Pending',
+        isPending: true),
   ];
 
   @override
@@ -457,12 +426,12 @@ class _RecentJourneysSection extends StatelessWidget {
               const Text('Recent journeys',
                   style: TextStyle(
                       color: Color(0xFF1A1D2E),
-                      fontSize: 16,
+                      fontSize: 20,
                       fontWeight: FontWeight.w700)),
-              Text('See all',
+              const Text('See all',
                   style: TextStyle(
-                      color: const Color(0xFF5B6FD4),
-                      fontSize: 14,
+                      color: Color(0xFF5B6FD4),
+                      fontSize: 16,
                       fontWeight: FontWeight.w500)),
             ],
           ),
@@ -471,9 +440,7 @@ class _RecentJourneysSection extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
+              color: Colors.white, borderRadius: BorderRadius.circular(16)),
           child: Column(
             children: journeys.asMap().entries.map((entry) {
               final i = entry.key;
@@ -520,7 +487,6 @@ class _JourneyTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
-          // Icon
           Container(
             width: 42,
             height: 42,
@@ -541,7 +507,6 @@ class _JourneyTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          // Text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -549,7 +514,7 @@ class _JourneyTile extends StatelessWidget {
                 Text(item.destination,
                     style: const TextStyle(
                         color: Color(0xFF1A1D2E),
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.w600)),
                 const SizedBox(height: 3),
                 Text(item.dateTime,
@@ -558,10 +523,8 @@ class _JourneyTile extends StatelessWidget {
               ],
             ),
           ),
-          // Status badge
           Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: item.isPending
                   ? const Color(0xFFFFF3E0)
@@ -574,87 +537,12 @@ class _JourneyTile extends StatelessWidget {
                 color: item.isPending
                     ? const Color(0xFFE59C1A)
                     : const Color(0xFF3DB87A),
-                fontSize: 12,
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────
-// BOTTOM NAVIGATION BAR
-// ─────────────────────────────────────────
-class _NavItem {
-  final IconData icon;
-  final String label;
-  const _NavItem({required this.icon, required this.label});
-}
-
-class _BottomNav extends StatelessWidget {
-  final List<_NavItem> items;
-  final int selectedIndex;
-  final ValueChanged<int> onTap;
-
-  const _BottomNav({
-    required this.items,
-    required this.selectedIndex,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFF0F2F7), width: 1)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 64,
-          child: Row(
-            children: items.asMap().entries.map((entry) {
-              final i = entry.key;
-              final item = entry.value;
-              final selected = i == selectedIndex;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => onTap(i),
-                  behavior: HitTestBehavior.opaque,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        item.icon,
-                        color: selected
-                            ? const Color(0xFF5B6FD4)
-                            : const Color(0xFFB0B7C8),
-                        size: 24,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        item.label,
-                        style: TextStyle(
-                          color: selected
-                              ? const Color(0xFF5B6FD4)
-                              : const Color(0xFFB0B7C8),
-                          fontSize: 11,
-                          fontWeight: selected
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
       ),
     );
   }
