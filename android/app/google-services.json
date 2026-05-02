@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "385789820198",
+    "project_id": "safe-arrivall",
+    "storage_bucket": "safe-arrivall.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385789820198:android:72c586bf104f5d36cb55e7",
+        "android_client_info": {
+          "package_name": "com.example.safe_arrival"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATBhYRwKtpTGgyXgrF7ObTA-UcoyoXW2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
