@@ -42,17 +42,24 @@ class _PhoneAuthState extends State<PhoneAuth> {
 
           ElevatedButton(
               onPressed: () async {
+
+
                 await FirebaseAuth.instance.verifyPhoneNumber(
 
                   // Phone number
-                  phoneNumber: '+92${phoneController.text}',
+                  phoneNumber: "+92${phoneController.text.trim()}",
+
 
                   // ✅ SMS received
-                  codeSent: (String verificationId, int? resendToken) {
+                  codeSent: (String verId, int? resendToken) {
                     setState(() {
-                      verificationId = verificationId;
+                      verificationId = verId;
                       codeSent = true;
                     });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("OTP sent!"))
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -61,15 +68,13 @@ class _PhoneAuthState extends State<PhoneAuth> {
                         ),
                       ),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("OTP sent!"))
-                    );
+
                   },
 
                   // ✅ Auto verify
                   verificationCompleted: (PhoneAuthCredential credential) async {
                     await FirebaseAuth.instance.signInWithCredential(credential);
-                    print("LogIn successful!");
+                    debugPrint("LogIn successful!");
                   },
 
                   // if error

@@ -19,6 +19,8 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        title: Text("OTP screen"),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -45,13 +47,14 @@ class _OtpScreenState extends State<OtpScreen> {
                 onPressed: () async {
                   PhoneAuthCredential credential = PhoneAuthProvider.credential(
                     verificationId: widget.verificationId, // ← widget. se access
-                    smsCode: otpController.text,
+                    smsCode: otpController.text.toString(),
                   );
                   try {
                     await FirebaseAuth.instance.signInWithCredential(credential);
-                    print("Login Successful!");
+                    debugPrint("Login Successful!");
                    Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
-                  } catch (e) {
+                  }
+                  catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Wrong OTP!"))
                     );
