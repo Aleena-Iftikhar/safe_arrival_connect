@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:safe_arrival/phone_auth.dart';
+import 'package:safe_arrival/register.dart';
 
 import 'contacts.dart';
 import 'destinationSetup.dart';
@@ -8,7 +9,9 @@ import 'homeScreen.dart';
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+
+  );
 
   runApp(const SafeArriveApp());
 }
@@ -34,7 +37,7 @@ class SafeArriveApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF4F6FA),
       ),
-      home: const PhoneAuth(),
+      home: const HomeScreen(),
     );
   }
 }

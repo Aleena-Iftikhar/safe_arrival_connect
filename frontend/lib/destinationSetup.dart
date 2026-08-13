@@ -13,18 +13,16 @@ class _SetupJourneyPageState extends State<SetupJourneyPage> {
   int _selectedIndex = 1;
 
   final TextEditingController _destinationNameController =
-  TextEditingController(text: 'University Hostel');
+  TextEditingController();
   final TextEditingController _destinationAddressController =
-  TextEditingController(text: 'Punjab University, Lahore');
-  final TextEditingController _messageController = TextEditingController(
-    text: 'Hi Mom, I have safely arrived at my destination. All is well! ❤️',
-  );
+  TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
 
   // Contacts list with selection state
   final List<Map<String, dynamic>> _contacts = [
-    {'initial': 'M', 'name': 'Mom', 'number': '+92 300 1234567', 'selected': true},
-    {'initial': 'D', 'name': 'Dad', 'number': '+92 300 7654321', 'selected': true},
-    {'initial': 'A', 'name': 'Ayesha', 'number': '+92 321 9988776', 'selected': true},
+    {'initial': 'M', 'name': 'Mom', 'number': '+92 300 1234567', 'selected': false},
+    {'initial': 'D', 'name': 'Dad', 'number': '+92 300 7654321', 'selected': false},
+    {'initial': 'A', 'name': 'Ayesha', 'number': '+92 321 9988776', 'selected': false},
     {'initial': 'E', 'name': 'Emergency Hotline', 'number': '+92 300 0000115', 'selected': false},
   ];
 
@@ -99,7 +97,7 @@ class _SetupJourneyPageState extends State<SetupJourneyPage> {
               const SizedBox(height: 8),
               _inputField(
                 controller: _destinationNameController,
-                hint: 'e.g. University Hostel',
+                hint: 'Enter your destination..',
               ),
 
               const SizedBox(height: 20),
@@ -250,7 +248,19 @@ class _SetupJourneyPageState extends State<SetupJourneyPage> {
                 height: 54,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // TODO: save journey logic
+                    // Selected contacts
+                    final selectedContacts = _contacts
+                        .where((c) => c['selected'] == true)
+                        .toList();
+
+                    // navigate result back to home screen
+                    Navigator.pop(context, {
+                      'destinationName': _destinationNameController.text.trim(),
+                      'destinationAddress':
+                      _destinationAddressController.text.trim(),
+                      'message': _messageController.text.trim(),
+                      'contacts': selectedContacts,
+                    });
                   },
                   icon: const Icon(Icons.save_outlined, size: 22),
                   label: const Text(

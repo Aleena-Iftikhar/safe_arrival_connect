@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'commonWidget/bottomNavigationBar.dart';
+import 'destinationSetup.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,6 +11,34 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+
+  String _destinationName = 'No destination set';
+  String _destinationAddress = 'Tap to configure your journey';
+  String _arrivalMessage = 'No arrival message set yet';
+  List<Map<String, dynamic>> _selectedContacts = [];
+
+  Future<void> _openSetupJourney() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SetupJourneyPage()),
+    );
+
+    if (result != null && result is Map) {
+      setState(() {
+        final name = (result['destinationName'] as String?)?.trim() ?? '';
+        final address = (result['destinationAddress'] as String?)?.trim() ?? '';
+        final message = (result['message'] as String?)?.trim() ?? '';
+
+        _destinationName = name.isNotEmpty ? name : 'No destination set';
+        _destinationAddress =
+        address.isNotEmpty ? address : 'Tap to configure your journey';
+        _arrivalMessage =
+        message.isNotEmpty ? message : 'No arrival message set yet';
+        _selectedContacts =
+        List<Map<String, dynamic>>.from(result['contacts'] ?? []);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +60,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       iconBgColor: const Color(0xFFE8EEFF),
                       iconColor: const Color(0xFF5B6FD4),
                       label: 'DESTINATION',
-                      title: 'University Hostel',
-                      subtitle: 'Punjab University, Lahore',
+                      title: _destinationName,
+                      subtitle: _destinationAddress,
+                      onTap: _openSetupJourney, // ✅ callback
                     ),
                     const SizedBox(height: 12),
-                    _RecipientsCard(),
+                    _RecipientsCard(
+                      contacts: _selectedContacts,
+                      onTap: _openSetupJourney,
+                    ),
                     const SizedBox(height: 12),
-                    _ArrivalMessageCard(),
+                    _ArrivalMessageCard(message: _arrivalMessage),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -173,6 +206,8 @@ class _InfoCard extends StatelessWidget {
   final String label;
   final String title;
   final String subtitle;
+  final VoidCallback onTap;
+
 
   const _InfoCard({
     required this.icon,
@@ -181,6 +216,7 @@ class _InfoCard extends StatelessWidget {
     required this.label,
     required this.title,
     required this.subtitle,
+    required this.onTap,
   });
 
   @override
@@ -222,7 +258,23 @@ class _InfoCard extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: Color(0xFFCDD2DE), size: 22),
+
+          // InkWell(
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => SetupJourneyPage())
+          //     );
+          //   },
+          //   child: Icon(Icons.chevron_right, color: Color(0xFFCDD2DE), size: 22),
+          //
+          // ),
+
+          InkWell(
+            onTap: onTap, // callback
+            child: const Icon(Icons.chevron_right,
+                color: Color(0xFFCDD2DE), size: 22),
+          ),
         ],
       ),
     );
@@ -233,79 +285,74 @@ class _InfoCard extends StatelessWidget {
 // RECIPIENTS CARD
 // ─────────────────────────────────────────
 class _RecipientsCard extends StatelessWidget {
-  final List<_Contact> contacts = const [
-    _Contact(initial: 'M', color: Color(0xFF5B6FD4)),
-    _Contact(initial: 'D', color: Color(0xFF3DB87A)),
-    _Contact(initial: 'A', color: Color(0xFFE85B7A)),
-  ];
+  final List<Map<String, dynamic>> contacts;
+  final VoidCallback onTap;
+
+  const _RecipientsCard({required this.contacts, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(16)),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-                color: const Color(0xFFE6F9F0),
-                borderRadius: BorderRadius.circular(12)),
-            child: const Icon(Icons.people_outline_rounded,
-                color: Color(0xFF3DB87A), size: 22),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('RECIPIENTS',
-                    style: TextStyle(
-                        color: Color(0xFF9BA3B4),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.8)),
-                const SizedBox(height: 2),
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Mom, Dad ',
-                        style: TextStyle(
-                            color: Color(0xFF1A1D2E),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      TextSpan(
-                        text: '+1 contacts',
-                        style: TextStyle(
-                            color: Color(0xFF5B6FD4),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: contacts
-                      .map((c) => Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: _ContactBadge(contact: c),
-                  ))
-                      .toList(),
-                ),
-              ],
+    final names = contacts.map((c) => c['name'] as String).join(', ');
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(16)),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                  color: const Color(0xFFE6F9F0),
+                  borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.people_outline_rounded,
+                  color: Color(0xFF3DB87A), size: 22),
             ),
-          ),
-          const Icon(Icons.chevron_right, color: Color(0xFFCDD2DE), size: 22),
-        ],
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('RECIPIENTS', style: TextStyle(
+                      color: Color(0xFF9BA3B4), fontSize: 16,
+                      fontWeight: FontWeight.w600, letterSpacing: 0.8)),
+                  const SizedBox(height: 2),
+                  Text(
+                    contacts.isEmpty ? 'No recipients selected' : names,
+                    style: const TextStyle(
+                        color: Color(0xFF1A1D2E), fontSize: 18,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  if (contacts.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: contacts
+                          .map((c) => Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: _ContactBadge(
+                          contact: _Contact(
+                            initial: c['initial'],
+                            color: const Color(0xFF5B6FD4),
+                          ),
+                        ),
+                      ))
+                          .toList(),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFFCDD2DE), size: 22),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class _Contact {
   final String initial;
@@ -341,6 +388,9 @@ class _ContactBadge extends StatelessWidget {
 // ARRIVAL MESSAGE CARD
 // ─────────────────────────────────────────
 class _ArrivalMessageCard extends StatelessWidget {
+  final String message;
+  const _ArrivalMessageCard({required this.message});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -364,12 +414,9 @@ class _ArrivalMessageCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('ARRIVAL MESSAGE',
-                    style: TextStyle(
-                        color: Color(0xFF9BA3B4),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.8)),
+                const Text('ARRIVAL MESSAGE', style: TextStyle(
+                    color: Color(0xFF9BA3B4), fontSize: 16,
+                    fontWeight: FontWeight.w600, letterSpacing: 0.8)),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -377,11 +424,9 @@ class _ArrivalMessageCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: const Color(0xFFF4F6FA),
                       borderRadius: BorderRadius.circular(12)),
-                  child: const Text(
-                    'Hi Mom, I have safely arrived at my destination. All is well! ❤️',
-                    style: TextStyle(
-                        color: Color(0xFF3A3F5C), fontSize: 16, height: 1.5),
-                  ),
+                  child: Text(message,
+                      style: const TextStyle(
+                          color: Color(0xFF3A3F5C), fontSize: 16, height: 1.5)),
                 ),
               ],
             ),
