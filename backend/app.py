@@ -3,14 +3,16 @@ from flask_cors import CORS
 import mysql.connector
 import json
 
+
 app = Flask(__name__)
 CORS(app)
 
-# ✅ MySQL connection settings — apne credentials daalein
+# ✅ MySQL connection settings
+import os
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'your_password',
+    'password': os.environ.get('DB_PASSWORD', 'pAss789'),
     'database': 'safearrive',
 }
 

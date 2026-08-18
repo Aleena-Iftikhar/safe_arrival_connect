@@ -50,8 +50,9 @@ class _OtpScreenState extends State<OtpScreen> {
                     smsCode: otpController.text.toString(),
                   );
                   try {
-                    await FirebaseAuth.instance.signInWithCredential(credential);
-                    debugPrint("Login Successful!");
+                   await FirebaseAuth.instance.signInWithCredential(credential);
+                   debugPrint("Login Successful!");
+                   if (!context.mounted) return;
                    Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
                   }
                   catch (e) {

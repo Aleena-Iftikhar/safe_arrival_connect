@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'commonWidget/bottomNavigationBar.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SetupJourneyPage extends StatefulWidget {
   const SetupJourneyPage({super.key});
@@ -247,21 +249,49 @@ class _SetupJourneyPageState extends State<SetupJourneyPage> {
                 width: double.infinity,
                 height: 54,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Selected contacts
-                    final selectedContacts = _contacts
-                        .where((c) => c['selected'] == true)
-                        .toList();
 
-                    // navigate result back to home screen
-                    Navigator.pop(context, {
+                  onPressed: () async {
+                    final selectedContacts = _contacts.where((c) => c['selected'] == true).toList();
+
+                    final journeyData = {
                       'destinationName': _destinationNameController.text.trim(),
-                      'destinationAddress':
-                      _destinationAddressController.text.trim(),
+                      'destinationAddress': _destinationAddressController.text.trim(),
                       'message': _messageController.text.trim(),
                       'contacts': selectedContacts,
-                    });
+                    };
+
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => const Center(child: CircularProgressIndicator()),
+                    );
+
+                    try {
+                      final response = await http.post(
+                        Uri.parse('http://10.0.2.2:3000/journey'), // Android emulator
+                        headers: {'Content-Type': 'application/json'},
+                        body: jsonEncode(journeyData),
+                      );
+
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                      final result = jsonDecode(response.body);
+
+                      if (result['success'] == true) {
+                        Navigator.pop(context, journeyData);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result['message'] ?? 'Save failed')),
+                        );
+                      }
+                    } catch (e) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: $e')),
+                      );
+                    }
                   },
+
                   icon: const Icon(Icons.save_outlined, size: 22),
                   label: const Text(
                     'Save Journey',

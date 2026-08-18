@@ -1,7 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:safe_arrival/phone_auth.dart';
-import 'package:safe_arrival/register.dart';
 
 import 'contacts.dart';
 import 'destinationSetup.dart';

@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  String _destinationName = 'No destination set';
+  String _destinationName = 'Set your destination';
   String _destinationAddress = 'Tap to configure your journey';
   String _arrivalMessage = 'No arrival message set yet';
   List<Map<String, dynamic>> _selectedContacts = [];
@@ -29,11 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
         final address = (result['destinationAddress'] as String?)?.trim() ?? '';
         final message = (result['message'] as String?)?.trim() ?? '';
 
-        _destinationName = name.isNotEmpty ? name : 'No destination set';
-        _destinationAddress =
-        address.isNotEmpty ? address : 'Tap to configure your journey';
-        _arrivalMessage =
-        message.isNotEmpty ? message : 'No arrival message set yet';
+        _destinationName = name.isNotEmpty ? name : 'Set your destination';
+        _destinationAddress = address.isNotEmpty ? address : 'Tap to configure your journey';
+        _arrivalMessage = message.isNotEmpty ? message : 'No arrival message set yet';
         _selectedContacts =
         List<Map<String, dynamic>>.from(result['contacts'] ?? []);
       });
@@ -75,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              _RecentJourneysSection(),
+              // _RecentJourneysSection(),
               const SizedBox(height: 16),
             ],
           ),
@@ -117,7 +115,7 @@ class _HeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      // width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -163,18 +161,10 @@ class _HeaderCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Container(
-            width: double.infinity,
             height: 52,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.10),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -241,7 +231,7 @@ class _InfoCard extends StatelessWidget {
               children: [
                 Text(label,
                     style: const TextStyle(
-                        color: Color(0xFF9BA3B4),
+                        color: Color(0xFF6F7885),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.8)),
@@ -259,22 +249,6 @@ class _InfoCard extends StatelessWidget {
             ),
           ),
 
-          // InkWell(
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => SetupJourneyPage())
-          //     );
-          //   },
-          //   child: Icon(Icons.chevron_right, color: Color(0xFFCDD2DE), size: 22),
-          //
-          // ),
-
-          InkWell(
-            onTap: onTap, // callback
-            child: const Icon(Icons.chevron_right,
-                color: Color(0xFFCDD2DE), size: 22),
-          ),
         ],
       ),
     );
@@ -370,9 +344,9 @@ class _ContactBadge extends StatelessWidget {
       width: 28,
       height: 28,
       decoration: BoxDecoration(
-        color: contact.color.withOpacity(0.15),
+        color: contact.color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: contact.color.withOpacity(0.3), width: 1),
+        border: Border.all(color: contact.color.withValues(alpha: 0.3), width: 1),
       ),
       alignment: Alignment.center,
       child: Text(contact.initial,
@@ -390,6 +364,7 @@ class _ContactBadge extends StatelessWidget {
 class _ArrivalMessageCard extends StatelessWidget {
   final String message;
   const _ArrivalMessageCard({required this.message});
+
 
   @override
   Widget build(BuildContext context) {
@@ -440,155 +415,155 @@ class _ArrivalMessageCard extends StatelessWidget {
 // ─────────────────────────────────────────
 // RECENT JOURNEYS SECTION
 // ─────────────────────────────────────────
-class _RecentJourneysSection extends StatelessWidget {
-  final List<_JourneyItem> journeys = const [
-    _JourneyItem(
-        destination: 'University Hostel',
-        dateTime: 'Apr 18 · 06:19 PM',
-        status: 'Sent',
-        isPending: false),
-    _JourneyItem(
-        destination: 'Office, Gulberg',
-        dateTime: 'Apr 16 · 06:19 PM',
-        status: 'Sent',
-        isPending: false),
-    _JourneyItem(
-        destination: "Aunt's House, DHA",
-        dateTime: 'Apr 14 · 06:19 PM',
-        status: 'Pending',
-        isPending: true),
-  ];
+// class _RecentJourneysSection extends StatelessWidget {
+//   final List<_JourneyItem> journeys = const [
+//     _JourneyItem(
+//         destination: 'University Hostel',
+//         dateTime: 'Apr 18 · 06:19 PM',
+//         status: 'Sent',
+//         isPending: false),
+//     _JourneyItem(
+//         destination: 'Office, Gulberg',
+//         dateTime: 'Apr 16 · 06:19 PM',
+//         status: 'Sent',
+//         isPending: false),
+//     _JourneyItem(
+//         destination: "Aunt's House, DHA",
+//         dateTime: 'Apr 14 · 06:19 PM',
+//         status: 'Pending',
+//         isPending: true),
+//   ];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               const Text('Recent journeys',
+//                   style: TextStyle(
+//                       color: Color(0xFF1A1D2E),
+//                       fontSize: 20,
+//                       fontWeight: FontWeight.w700)),
+//               const Text('See all',
+//                   style: TextStyle(
+//                       color: Color(0xFF5B6FD4),
+//                       fontSize: 16,
+//                       fontWeight: FontWeight.w500)),
+//             ],
+//           ),
+//         ),
+//         const SizedBox(height: 12),
+//         Container(
+//           margin: const EdgeInsets.symmetric(horizontal: 16),
+//           decoration: BoxDecoration(
+//               color: Colors.white, borderRadius: BorderRadius.circular(16)),
+//           child: Column(
+//             children: journeys.asMap().entries.map((entry) {
+//               final i = entry.key;
+//               final j = entry.value;
+//               return Column(
+//                 children: [
+//                   _JourneyTile(item: j),
+//                   if (i < journeys.length - 1)
+//                     const Divider(
+//                         height: 1,
+//                         thickness: 0.5,
+//                         indent: 72,
+//                         color: Color(0xFFF0F2F7)),
+//                 ],
+//               );
+//             }).toList(),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Recent journeys',
-                  style: TextStyle(
-                      color: Color(0xFF1A1D2E),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700)),
-              const Text('See all',
-                  style: TextStyle(
-                      color: Color(0xFF5B6FD4),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500)),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(16)),
-          child: Column(
-            children: journeys.asMap().entries.map((entry) {
-              final i = entry.key;
-              final j = entry.value;
-              return Column(
-                children: [
-                  _JourneyTile(item: j),
-                  if (i < journeys.length - 1)
-                    const Divider(
-                        height: 1,
-                        thickness: 0.5,
-                        indent: 72,
-                        color: Color(0xFFF0F2F7)),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
+// class _JourneyItem {
+//   final String destination;
+//   String dateTime;
+//   final String status;
+//   final bool isPending;
+//   _JourneyItem({
+//     required this.destination,
+//     required this.dateTime,
+//     required this.status,
+//     required this.isPending,
+//   });
+// }
 
-class _JourneyItem {
-  final String destination;
-  final String dateTime;
-  final String status;
-  final bool isPending;
-  const _JourneyItem({
-    required this.destination,
-    required this.dateTime,
-    required this.status,
-    required this.isPending,
-  });
-}
-
-class _JourneyTile extends StatelessWidget {
-  final _JourneyItem item;
-  const _JourneyTile({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: item.isPending
-                  ? const Color(0xFFFFF3E0)
-                  : const Color(0xFFE6F9F0),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              item.isPending
-                  ? Icons.access_time_rounded
-                  : Icons.check_circle_outline_rounded,
-              color: item.isPending
-                  ? const Color(0xFFE59C1A)
-                  : const Color(0xFF3DB87A),
-              size: 22,
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(item.destination,
-                    style: const TextStyle(
-                        color: Color(0xFF1A1D2E),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600)),
-                const SizedBox(height: 3),
-                Text(item.dateTime,
-                    style: const TextStyle(
-                        color: Color(0xFF9BA3B4), fontSize: 13)),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: item.isPending
-                  ? const Color(0xFFFFF3E0)
-                  : const Color(0xFFE6F9F0),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              item.status,
-              style: TextStyle(
-                color: item.isPending
-                    ? const Color(0xFFE59C1A)
-                    : const Color(0xFF3DB87A),
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// class _JourneyTile extends StatelessWidget {
+//   final _JourneyItem item;
+//   const _JourneyTile({required this.item});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+//       child: Row(
+//         children: [
+//           Container(
+//             width: 42,
+//             height: 42,
+//             decoration: BoxDecoration(
+//               color: item.isPending
+//                   ? const Color(0xFFFFF3E0)
+//                   : const Color(0xFFE6F9F0),
+//               borderRadius: BorderRadius.circular(12),
+//             ),
+//             child: Icon(
+//               item.isPending
+//                   ? Icons.access_time_rounded
+//                   : Icons.check_circle_outline_rounded,
+//               color: item.isPending
+//                   ? const Color(0xFFE59C1A)
+//                   : const Color(0xFF3DB87A),
+//               size: 22,
+//             ),
+//           ),
+//           const SizedBox(width: 14),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(item.destination,
+//                     style: const TextStyle(
+//                         color: Color(0xFF1A1D2E),
+//                         fontSize: 18,
+//                         fontWeight: FontWeight.w600)),
+//                 const SizedBox(height: 3),
+//                 Text(item.dateTime,
+//                     style: const TextStyle(
+//                         color: Color(0xFF9BA3B4), fontSize: 13)),
+//               ],
+//             ),
+//           ),
+//           Container(
+//             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//             decoration: BoxDecoration(
+//               color: item.isPending
+//                   ? const Color(0xFFFFF3E0)
+//                   : const Color(0xFFE6F9F0),
+//               borderRadius: BorderRadius.circular(20),
+//             ),
+//             child: Text(
+//               item.status,
+//               style: TextStyle(
+//                 color: item.isPending
+//                     ? const Color(0xFFE59C1A)
+//                     : const Color(0xFF3DB87A),
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.w600,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
