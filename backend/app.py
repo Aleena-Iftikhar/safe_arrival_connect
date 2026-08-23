@@ -2,17 +2,19 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 import json
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# ✅ MySQL connection settings
+# MySQL connection
 import os
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': os.environ.get('DB_PASSWORD', 'pAss789'),
+    'password': os.environ.get('DB_PASSWORD'),
     'database': 'safearrive',
 }
 
@@ -53,7 +55,7 @@ def save_journey():
         return jsonify({'success': False, 'message': 'Server error'}), 500
 
 
-# ── Get latest journey (for HomeScreen) ──
+# Get latest journey
 @app.route('/journey/latest', methods=['GET'])
 def get_latest_journey():
     try:
@@ -87,7 +89,7 @@ def get_latest_journey():
         return jsonify({'success': False, 'message': 'Server error'}), 500
 
 
-# ── Get all journeys (for "Recent journeys" section) ──
+# Get all journeys
 @app.route('/journey/all', methods=['GET'])
 def get_all_journeys():
     try:
@@ -100,7 +102,6 @@ def get_all_journeys():
         cursor.close()
         conn.close()
 
-        # datetime ko string mein convert karo taake JSON serialize ho sake
         for j in journeys:
             j['created_at'] = j['created_at'].isoformat()
 
