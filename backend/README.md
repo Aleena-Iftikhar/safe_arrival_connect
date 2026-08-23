@@ -1,10 +1,8 @@
-# Backend — What This Code Does
+# Backend
 
 This is a simple **Flask (Python)** server that connects to a **MySQL** database. Its job is to save and return a user's "journey" (destination + emergency contacts) so the Flutter app can use it.
 
 ---
-
-## File: `app.py`
 
 ### 1. Setup
 ```python
@@ -43,5 +41,5 @@ app.run(host='0.0.0.0', port=3000, debug=True)
 
 ---
 
-## Summary (One line)
+## Summary
 This backend takes journey data from the Flutter app, saves it to MySQL, and sends it back whenever the app needs it — that's the whole job.
