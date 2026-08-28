@@ -1,17 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'contacts.dart';
 import 'destinationSetup.dart';
+import 'historyPage.dart';
 import 'homeScreen.dart';
 
-void main()async{
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-
   );
 
-  runApp(const SafeArriveApp());
+  runApp(
+    const ProviderScope(
+      child: SafeArriveApp(),
+    ),
+  );
 }
 
 class SafeArriveApp extends StatelessWidget {
@@ -24,7 +28,7 @@ class SafeArriveApp extends StatelessWidget {
         '/home':     (context) => HomeScreen(),
         '/setup':    (context) => SetupJourneyPage(),
         '/contacts': (context) => ContactsPage(),
-        // '/history':  (context) => HistoryPage(),
+        '/history':  (context) => const HistoryPage(),
         // '/settings': (context) => SettingsPage(),
       },
 
