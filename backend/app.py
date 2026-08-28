@@ -102,10 +102,19 @@ def get_all_journeys():
         cursor.close()
         conn.close()
 
+        formatted_journeys = []
         for j in journeys:
-            j['created_at'] = j['created_at'].isoformat()
+            formatted_journeys.append({
+                'id': j['id'],
+                'destinationName': j['destination_name'],
+                'destinationAddress': j['destination_address'],
+                'message': j['message'],
+                'contacts': j['contacts'],
+                'status': j['status'],
+                'createdAt': j['created_at'].isoformat(),
+            })
 
-        return jsonify({'success': True, 'data': journeys}), 200
+        return jsonify({'success': True, 'data': formatted_journeys}), 200
 
     except mysql.connector.Error as err:
         print(f"DB Error: {err}")
