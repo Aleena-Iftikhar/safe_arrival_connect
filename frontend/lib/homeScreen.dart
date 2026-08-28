@@ -1,45 +1,34 @@
 import 'package:flutter/material.dart';
 import 'commonWidget/bottomNavigationBar.dart';
-import 'destinationSetup.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/journey_provider.dart';
 
-class HomeScreen extends StatefulWidget {
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedIndex = 0;
-
-  String _destinationName = 'Set your destination';
-  String _destinationAddress = 'Tap to configure your journey';
-  String _arrivalMessage = 'No arrival message set yet';
-  List<Map<String, dynamic>> _selectedContacts = [];
-
-  Future<void> _openSetupJourney() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SetupJourneyPage()),
-    );
-
-    if (result != null && result is Map) {
-      setState(() {
-        final name = (result['destinationName'] as String?)?.trim() ?? '';
-        final address = (result['destinationAddress'] as String?)?.trim() ?? '';
-        final message = (result['message'] as String?)?.trim() ?? '';
-
-        _destinationName = name.isNotEmpty ? name : 'Set your destination';
-        _destinationAddress = address.isNotEmpty ? address : 'Tap to configure your journey';
-        _arrivalMessage = message.isNotEmpty ? message : 'No arrival message set yet';
-        _selectedContacts =
-        List<Map<String, dynamic>>.from(result['contacts'] ?? []);
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final latestJourney = ref.watch(latestJourneyProvider);
+
+    final destinationName = latestJourney?.destinationName.isNotEmpty == true
+        ? latestJourney!.destinationName
+        : 'Set your destination';
+    final destinationAddress = latestJourney?.destinationAddress.isNotEmpty == true
+        ? latestJourney!.destinationAddress
+        : 'Tap to configure your journey';
+    final arrivalMessage = latestJourney?.message.isNotEmpty == true
+        ? latestJourney!.message
+        : 'No arrival message set yet';
+    final selectedContacts = latestJourney?.contacts ?? [];
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6FA),
       body: SafeArea(
@@ -58,22 +47,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       iconBgColor: const Color(0xFFE8EEFF),
                       iconColor: const Color(0xFF5B6FD4),
                       label: 'DESTINATION',
-                      title: _destinationName,
-                      subtitle: _destinationAddress,
-                      onTap: _openSetupJourney, // ✅ callback
+                      title: destinationName,
+                      subtitle: destinationAddress,
+                      onTap: () => Navigator.pushNamed(context, '/setup'),
                     ),
                     const SizedBox(height: 12),
                     _RecipientsCard(
-                      contacts: _selectedContacts,
-                      onTap: _openSetupJourney,
+                      contacts: selectedContacts,
+                      onTap: () => Navigator.pushNamed(context, '/setup'),
                     ),
                     const SizedBox(height: 12),
-                    _ArrivalMessageCard(message: _arrivalMessage),
+                    _ArrivalMessageCard(message: arrivalMessage),
                     const SizedBox(height: 20),
                   ],
                 ),
               ),
-              // _RecentJourneysSection(),
               const SizedBox(height: 16),
             ],
           ),

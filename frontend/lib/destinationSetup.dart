@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/journey_provider.dart';
+
 import 'commonWidget/bottomNavigationBar.dart';
 
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-class SetupJourneyPage extends StatefulWidget {
+class SetupJourneyPage extends ConsumerStatefulWidget {
   const SetupJourneyPage({super.key});
 
   @override
-  State<SetupJourneyPage> createState() => _SetupJourneyPageState();
+  ConsumerState<SetupJourneyPage> createState() => _SetupJourneyPageState();
 }
 
-class _SetupJourneyPageState extends State<SetupJourneyPage> {
+class _SetupJourneyPageState extends ConsumerState<SetupJourneyPage> {
   int _selectedIndex = 1;
 
   final TextEditingController _destinationNameController =
@@ -120,9 +120,7 @@ class _SetupJourneyPageState extends State<SetupJourneyPage> {
 
               // ── Use Current Location ──
               GestureDetector(
-                onTap: () {
-                  // TODO: get current GPS location
-                },
+                onTap: () { },
                 child: Row(
                   children: const [
                     Icon(Icons.near_me_outlined, color: _primary, size: 16),
@@ -144,7 +142,6 @@ class _SetupJourneyPageState extends State<SetupJourneyPage> {
               // ── Map Placeholder ──
               GestureDetector(
                 onTap: () {
-                  // TODO: open map picker
                 },
                 child: Container(
                   width: double.infinity,
@@ -260,34 +257,54 @@ class _SetupJourneyPageState extends State<SetupJourneyPage> {
                       'contacts': selectedContacts,
                     };
 
+                    // spinner appears for loading
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => const Center(child: CircularProgressIndicator()),
+                      builder: (dialogContext) => PopScope(
+                        canPop: false,
+                        child: AlertDialog(
+                          content: Row(
+                            children: const [
+                              CircularProgressIndicator(),
+                              SizedBox(width: 20),
+                              Text("Saving..."),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(dialogContext).pop();      // close the dialog
+                              },
+                              child: const Text("Cancel"),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
 
-                    try {
-                      final response = await http.post(
-                        Uri.parse('http://10.0.2.2:3000/journey'), // Android emulator
-                        headers: {'Content-Type': 'application/json'},
-                        body: jsonEncode(journeyData),
+                    final success =
+                    await ref.read(journeyProvider.notifier).saveJourney(journeyData);
+
+                    if (!context.mounted) return;
+                    Navigator.of(context, rootNavigator: true).pop(); // close the dialog
+
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Journey saved successfully'),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 1),
+                        ),
                       );
 
+                      await Future.delayed(const Duration(seconds: 1));
                       if (!context.mounted) return;
-                      Navigator.pop(context);
-                      final result = jsonDecode(response.body);
 
-                      if (result['success'] == true) {
-                        Navigator.pop(context, journeyData);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result['message'] ?? 'Save failed')),
-                        );
-                      }
-                    } catch (e) {
-                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, '/home');
+                    } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: $e')),
+                        const SnackBar(content: Text('Save failed, please try again')),
                       );
                     }
                   },
