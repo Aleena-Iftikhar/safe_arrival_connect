@@ -16,8 +16,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
   static const Color _bgPage = Color(0xFFF4F6FA);
   static const Color _textPrimary = Color(0xFF1A1D2E);
-  static const Color _textSecondary = Color(0xFF9BA3B4);
-  static const Color _primary = Color(0xFF5B6FD4);
+  static const Color _textSecondary = Color(0xFF8D93AE);
 
   @override
   Widget build(BuildContext context) {
