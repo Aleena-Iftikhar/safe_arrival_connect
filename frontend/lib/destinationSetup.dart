@@ -1,7 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/journey_provider.dart';
-
+import 'package:latlong2/latlong.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'mapPickerPage.dart';
 import 'commonWidget/bottomNavigationBar.dart';
 
 class SetupJourneyPage extends ConsumerStatefulWidget {
@@ -120,7 +124,49 @@ class _SetupJourneyPageState extends ConsumerState<SetupJourneyPage> {
 
               // ── Use Current Location ──
               GestureDetector(
-                onTap: () { },
+                onTap: () async {
+                  // Check/request permission
+                  LocationPermission permission = await Geolocator.checkPermission();
+                  if (permission == LocationPermission.denied) {
+                    permission = await Geolocator.requestPermission();
+                  }
+
+                  if (permission == LocationPermission.denied ||
+                      permission == LocationPermission.deniedForever) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Location permission denied')),
+                    );
+                    return;
+                  }
+
+                  final isEnabled = await Geolocator.isLocationServiceEnabled();
+                  if (!isEnabled) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please enable location services')),
+                    );
+                    return;
+                  }
+
+                  final position = await Geolocator.getCurrentPosition();
+
+                  final placemarks = await placemarkFromCoordinates(
+                    position.latitude,
+                    position.longitude,
+                  );
+
+                  if (placemarks.isNotEmpty) {
+                    final p = placemarks.first;
+                    final address = [p.street, p.locality, p.administrativeArea]
+                        .where((e) => e != null && e.isNotEmpty)
+                        .join(', ');
+
+                    setState(() {
+                      _destinationAddressController.text = address;
+                    });
+                  }
+                },
                 child: Row(
                   children: const [
                     Icon(Icons.near_me_outlined, color: _primary, size: 16),
@@ -141,7 +187,17 @@ class _SetupJourneyPageState extends ConsumerState<SetupJourneyPage> {
 
               // ── Map Placeholder ──
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  final result = await Navigator.push<Map<String, dynamic>>(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MapPickerPage()),
+                  );
+
+                  if (result != null) {
+                    setState(() {
+                      _destinationAddressController.text = result['address'];
+                    });
+                  }
                 },
                 child: Container(
                   width: double.infinity,
